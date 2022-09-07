@@ -8,7 +8,6 @@ import MenuScreen from "../components/Screens/MenuScreen";
 import GameplayScreen from "../components/Screens/GameplayScreen";
 import { useState } from "react";
 import GameOverScreen from "../components/Screens/GameOverScreen";
-import TestScreen from "../components/Screens/TestScreen";
 
 export default function Home() {
   const [playGame, setPlayGame] = useState(false);
@@ -47,11 +46,6 @@ export default function Home() {
             onPlayGame={playGameHandler}
             onMatchScore={matchScoreHandler}
           />
-          // <TestScreen
-          //   onGameOver={gameOverHandler}
-          //   onPlayGame={playGameHandler}
-          //   onMatchScore={matchScoreHandler}
-          // />
         )}
         {gameOver && !playGame && (
           <GameOverScreen

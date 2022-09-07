@@ -11,14 +11,14 @@ import useHttp from "../../pages/api/use-http";
 const GameplayScreen = (props) => {
   const [pokemonFetch, setPokemonFetch] = useState([]);
   const [pokemonData, setPokemonData] = useState([]);
-  const [wrongPokemon1, setWrongPokemon1] = useState("");
-  const [wrongPokemon2, setWrongPokemon2] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [startTimer, setStartTimer] = useState(3);
   const [GameTimer, setGameTimer] = useState(12);
   const [lives, setLives] = useState(3);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [adjustAnswers, setAdjustAnswers] = useState([]);
+  const [finalAnswers, setFinalAnswers] = useState([]);
   const [answersOrder, setAnswersOrder] = useState([]);
 
   // Fetch905 Pokemon
@@ -48,10 +48,60 @@ const GameplayScreen = (props) => {
   }, [fetchPokemonHandler]);
 
   // Fetch Pokemon Data options
-  // Checar si se puede obtener todas las respyestas aqui incluyendo las incorrectas
+  const { sendRequest: fetchPokemonDataHandler } = useHttp();
+
+  const secondWrongOptionFetch = () => {
+    const transformPokemonDataOptions = (pokemonObj) => {
+      const loadedPokemon = [];
+
+      loadedPokemon.push({
+        id: pokemonObj.id,
+        name: pokemonObj.name,
+        sprite: pokemonObj.sprites["front_default"],
+      });
+
+      console.log("incorrecto", loadedPokemon[0]);
+      setAnswers((ans) => [...ans, loadedPokemon[0].name]);
+    };
+
+    const randomNum = Math.floor(Math.random() * (pokemonFetch.length - 0) + 0);
+    const wrongPokemonUrl = pokemonFetch[randomNum].url;
+
+    fetchPokemonDataHandler(
+      {
+        url: wrongPokemonUrl,
+      },
+      transformPokemonDataOptions
+    );
+  };
+
+  const firstWrongOptionFetch = () => {
+    const transformPokemonDataOptions = (pokemonObj) => {
+      const loadedPokemon = [];
+
+      loadedPokemon.push({
+        id: pokemonObj.id,
+        name: pokemonObj.name,
+        sprite: pokemonObj.sprites["front_default"],
+      });
+
+      console.log("incorrecto", loadedPokemon[0]);
+      setAnswers((ans) => [...ans, loadedPokemon[0].name]);
+    };
+
+    const randomNum = Math.floor(Math.random() * (pokemonFetch.length - 0) + 0);
+    const wrongPokemonUrl = pokemonFetch[randomNum].url;
+
+    fetchPokemonDataHandler(
+      {
+        url: wrongPokemonUrl,
+      },
+      transformPokemonDataOptions
+    );
+  };
+
   const correctOptionFetch = () => {
     const transformPokemonDataOptions = (pokemonObj) => {
-      console.log("dentro", pokemonObj);
       const randomNumShiny = Math.floor(Math.random() * (100 - 1) + 1);
       let pokemonSprite = "";
 
@@ -70,12 +120,7 @@ const GameplayScreen = (props) => {
       });
 
       setPokemonData(loadedPokemon[0]);
-
-      setAnswers((answers) => [
-        loadedPokemon[0].name,
-        loadedPokemon[0].name,
-        loadedPokemon[0].name,
-      ]);
+      setAnswers((ans) => [...ans, loadedPokemon[0].name]);
     };
 
     const correctRand = Math.floor(
@@ -91,117 +136,34 @@ const GameplayScreen = (props) => {
     );
   };
 
-  const { sendRequest: fetchPokemonDataHandler } = useHttp();
+  // Poner las respuestas en los botones
+  useEffect(() => {
+    if (answers.length % 3 === 0 && answers.length !== 0) {
+      for (let i = answers.length - 3; i < answers.length; i++) {
+        console.log("pasando", answers[i]);
+        setAdjustAnswers((ans) => [...ans, answers[i]]);
+      }
+    }
+  }, [answers]);
+
+  useEffect(() => {
+    if (adjustAnswers.length === 3) {
+      setFinalAnswers(adjustAnswers);
+      setAdjustAnswers([]);
+    }
+  }, [adjustAnswers]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      firstWrongOptionFetch();
+      secondWrongOptionFetch();
       correctOptionFetch();
+      setIsLoading(false);
+      console.log(answers);
     }, 3000);
 
     return () => clearTimeout(timer);
   }, [fetchPokemonDataHandler, pokemonFetch]);
-
-  const fetchPokemonSpritesHandler = useCallback(async (dataFetch) => {
-    setIsLoading(true);
-
-    // let correctRand = 0;
-    let wrongRand1 = 0;
-    let wrongRand2 = 0;
-
-    if (wrongRand1 === wrongRand2) {
-      // correctRand = Math.floor(Math.random() * (dataFetch.length - 0) + 0);
-      wrongRand1 = Math.floor(Math.random() * (dataFetch.length - 0) + 0);
-      wrongRand2 = Math.floor(Math.random() * (dataFetch.length - 0) + 0);
-    }
-
-    try {
-      // const correctPokemon = dataFetch[correctRand].url;
-      const wrongPokemon1 = dataFetch[wrongRand1].url;
-      const wrongPokemon2 = dataFetch[wrongRand2].url;
-
-      // const responseCorrect = await fetch(correctPokemon);
-      const responseWrong1 = await fetch(wrongPokemon1);
-      const responseWrong2 = await fetch(wrongPokemon2);
-
-      if (!responseWrong1.ok || !responseWrong2.ok) {
-        throw new Error("Fetching Pokemon data went wrong!");
-      }
-
-      // Get the Correct pokemon data
-      // const data = await responseCorrect.json();
-
-      // while (data.sprites["front_default"] === null) {
-      //   correctRand = Math.floor(Math.random() * (dataFetch.length - 0) + 0);
-      //   const correctPokemon = dataFetch[correctRand].url;
-      //   const responseCorrect = await fetch(correctPokemon);
-
-      //   if (!responseCorrect.ok) {
-      //     throw new Error("Fetching Pokemon data went wrong!");
-      //   }
-      //   data = await responseCorrect.json();
-      //   console.log("Sprite Null");
-      // }
-
-      // const loadedPokemon = [];
-
-      // const randomNumShiny = Math.floor(Math.random() * (100 - 1) + 1);
-      // let pokemonSprite = "";
-
-      // if (randomNumShiny === 1) {
-      //   pokemonSprite = data.sprites["front_shiny"];
-      // } else {
-      //   pokemonSprite = data.sprites["front_default"];
-      // }
-
-      // loadedPokemon.push({
-      //   id: data.id,
-      //   name: data.name,
-      //   sprite: pokemonSprite,
-      // });
-
-      // setPokemonData(loadedPokemon[0]);
-
-      // Get the Wrong Pokemon data 1
-      const dataWrongPokemon1 = await responseWrong1.json();
-
-      const loadedWrongPokemon1 = [];
-
-      loadedWrongPokemon1.push({
-        id: dataWrongPokemon1.id,
-        name: dataWrongPokemon1.name,
-      });
-
-      setWrongPokemon1(loadedWrongPokemon1[0]);
-
-      // Get the Wrong Pokemon data 2
-      const dataWrongPokemon2 = await responseWrong2.json();
-
-      const loadedWrongPokemon2 = [];
-
-      loadedWrongPokemon2.push({
-        id: dataWrongPokemon2.id,
-        name: dataWrongPokemon2.name,
-      });
-
-      setWrongPokemon2(loadedWrongPokemon2[0]);
-      // setAnswers((answers) => [
-      //   loadedPokemon[0].name,
-      //   loadedWrongPokemon1[0].name,
-      //   loadedWrongPokemon2[0].name,
-      // ]);
-    } catch (error) {
-      console.log(error);
-    }
-    setIsLoading(false);
-  }, []);
-
-  // Start game timer
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchPokemonSpritesHandler(pokemonFetch);
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [pokemonFetch]);
 
   // Start game countdown
   useEffect(() => {
@@ -226,6 +188,9 @@ const GameplayScreen = (props) => {
   };
 
   const loadNextGuess = () => {
+    // setAnswers([]);
+    firstWrongOptionFetch();
+    secondWrongOptionFetch();
     correctOptionFetch();
     setGameTimer(10);
   };
@@ -265,7 +230,7 @@ const GameplayScreen = (props) => {
     let currentIndex = array.length,
       randomIndex;
 
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
 
@@ -278,8 +243,8 @@ const GameplayScreen = (props) => {
   }
 
   useEffect(() => {
-    shuffle(answers);
-  }, [pokemonData]);
+    shuffle(finalAnswers);
+  }, [finalAnswers]);
 
   return (
     <Container pt="3rem" px="0" maxW="100%">
