@@ -8,10 +8,16 @@ import MenuScreen from "../components/Screens/MenuScreen";
 import GameplayScreen from "../components/Screens/GameplayScreen";
 import { useState } from "react";
 import GameOverScreen from "../components/Screens/GameOverScreen";
+import InstructionScreen from "../components/Screens/InstructionScreen";
+import DifficultyScreen from "../components/Screens/DifficultyScreen";
 
 export default function Home() {
   const [playGame, setPlayGame] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [openInstructions, setOpenInstructions] = useState(false);
+  const [easyMode, setEasyMode] = useState(false);
+  const [hardMode, setHardMode] = useState(false);
+  const [modeBeforeGO, setModeBeforeGO] = useState("easy");
   const [matchScore, setMatchScore] = useState(0);
 
   const playGameHandler = (value) => {
@@ -20,6 +26,22 @@ export default function Home() {
 
   const gameOverHandler = (value) => {
     setGameOver(value);
+  };
+
+  const instructionsHandler = (value) => {
+    setOpenInstructions(value);
+  };
+
+  const easyModeHandler = (value) => {
+    setEasyMode(value);
+  };
+
+  const hardModeHandler = (value) => {
+    setHardMode(value);
+  };
+
+  const difficultyOverHandler = (value) => {
+    setModeBeforeGO(value);
   };
 
   const matchScoreHandler = (value) => {
@@ -39,20 +61,63 @@ export default function Home() {
       </header>
       <main>
         <ToggleColorMode />
-        {!playGame && !gameOver && <MenuScreen onPlayGame={playGameHandler} />}
-        {playGame && !gameOver && (
-          <GameplayScreen
-            onGameOver={gameOverHandler}
+        {!playGame &&
+          !gameOver &&
+          !openInstructions &&
+          !easyMode &&
+          !hardMode && (
+            <MenuScreen
+              onPlayGame={playGameHandler}
+              onInstructions={instructionsHandler}
+            />
+          )}
+
+        {playGame && !gameOver && !openInstructions && (
+          <DifficultyScreen
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
             onPlayGame={playGameHandler}
-            onMatchScore={matchScoreHandler}
           />
         )}
-        {gameOver && !playGame && (
-          <GameOverScreen
+
+        {easyMode && !hardMode && !gameOver && !openInstructions && (
+          <GameplayScreen
             onGameOver={gameOverHandler}
-            onPlayGame={playGameHandler}
-            matchScore={matchScore}
+            onMatchScore={matchScoreHandler}
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
+            onDifficultyOver={difficultyOverHandler}
+            difficulty={"easy"}
           />
+        )}
+        {hardMode && !easyMode && !gameOver && !openInstructions && (
+          <GameplayScreen
+            onGameOver={gameOverHandler}
+            onMatchScore={matchScoreHandler}
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
+            onDifficultyOver={difficultyOverHandler}
+            difficulty={"hard"}
+          />
+        )}
+
+        {gameOver &&
+          !playGame &&
+          !openInstructions &&
+          !easyMode &&
+          !hardMode && (
+            <GameOverScreen
+              onGameOver={gameOverHandler}
+              onPlayGame={playGameHandler}
+              onEasyMode={easyModeHandler}
+              onHardMode={hardModeHandler}
+              difficulty={modeBeforeGO}
+              matchScore={matchScore}
+            />
+          )}
+
+        {openInstructions && (
+          <InstructionScreen onInstructions={instructionsHandler} />
         )}
       </main>
     </div>

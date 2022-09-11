@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Center, Container, Text } from "@chakra-ui/react";
 import ButtonDefault from "../UI/ButtonDefault";
-import ProgressBar from "../UI/ProgressBasr";
+import ProgressBar from "../UI/ProgressBar";
 import Lives from "../GameAssets/Lives";
 import PokemonImage from "../GameAssets/PokemonImage";
 import GameScore from "../GameAssets/GameScore";
@@ -13,7 +13,7 @@ const GameplayScreen = (props) => {
   const [pokemonData, setPokemonData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [startTimer, setStartTimer] = useState(3);
-  const [GameTimer, setGameTimer] = useState(12);
+  const [GameTimer, setGameTimer] = useState(62);
   const [lives, setLives] = useState(3);
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState([]);
@@ -52,6 +52,7 @@ const GameplayScreen = (props) => {
 
   const secondWrongOptionFetch = () => {
     const transformPokemonDataOptions = (pokemonObj) => {
+      setIsLoading(true);
       const loadedPokemon = [];
 
       loadedPokemon.push({
@@ -60,7 +61,6 @@ const GameplayScreen = (props) => {
         sprite: pokemonObj.sprites["front_default"],
       });
 
-      console.log("incorrecto", loadedPokemon[0]);
       setAnswers((ans) => [...ans, loadedPokemon[0].name]);
     };
 
@@ -77,6 +77,7 @@ const GameplayScreen = (props) => {
 
   const firstWrongOptionFetch = () => {
     const transformPokemonDataOptions = (pokemonObj) => {
+      setIsLoading(true);
       const loadedPokemon = [];
 
       loadedPokemon.push({
@@ -85,7 +86,6 @@ const GameplayScreen = (props) => {
         sprite: pokemonObj.sprites["front_default"],
       });
 
-      console.log("incorrecto", loadedPokemon[0]);
       setAnswers((ans) => [...ans, loadedPokemon[0].name]);
     };
 
@@ -102,10 +102,11 @@ const GameplayScreen = (props) => {
 
   const correctOptionFetch = () => {
     const transformPokemonDataOptions = (pokemonObj) => {
+      setIsLoading(true);
       const randomNumShiny = Math.floor(Math.random() * (100 - 1) + 1);
       let pokemonSprite = "";
 
-      if (randomNumShiny === 1) {
+      if (randomNumShiny === 1 && pokemonObj.sprites["front_shiny"] !== null) {
         pokemonSprite = pokemonObj.sprites["front_shiny"];
       } else {
         pokemonSprite = pokemonObj.sprites["front_default"];
@@ -140,7 +141,6 @@ const GameplayScreen = (props) => {
   useEffect(() => {
     if (answers.length % 3 === 0 && answers.length !== 0) {
       for (let i = answers.length - 3; i < answers.length; i++) {
-        console.log("pasando", answers[i]);
         setAdjustAnswers((ans) => [...ans, answers[i]]);
       }
     }
@@ -158,8 +158,6 @@ const GameplayScreen = (props) => {
       firstWrongOptionFetch();
       secondWrongOptionFetch();
       correctOptionFetch();
-      setIsLoading(false);
-      console.log(answers);
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -181,10 +179,14 @@ const GameplayScreen = (props) => {
   }, [startTimer]);
 
   const endOfTheMatch = () => {
-    console.log("game over");
     props.onMatchScore(score);
     props.onGameOver(true);
-    props.onPlayGame(false);
+    props.onDifficultyOver(props.difficulty);
+    {
+      props.difficulty === "easy"
+        ? props.onEasyMode(false)
+        : props.onHardMode(false);
+    }
   };
 
   const loadNextGuess = () => {
@@ -192,27 +194,24 @@ const GameplayScreen = (props) => {
     firstWrongOptionFetch();
     secondWrongOptionFetch();
     correctOptionFetch();
-    setGameTimer(10);
+    // setGameTimer(10);
   };
 
   useEffect(() => {
     if (GameTimer <= 0) {
-      setLives(lives - 1);
-      if (lives <= 1) {
-        endOfTheMatch();
-      }
-
-      loadNextGuess();
+      endOfTheMatch();
     }
 
     if (!GameTimer) return;
 
     const intervalId = setInterval(() => {
-      setGameTimer(GameTimer - 0.02);
+      if (!isLoading) {
+        setGameTimer(GameTimer - 0.02);
+      }
     }, 20);
 
     return () => clearInterval(intervalId);
-  }, [GameTimer]);
+  }, [GameTimer, isLoading]);
 
   const answerHandler = (answer) => {
     if (pokemonData.name === answer && GameTimer > 0) {
@@ -244,20 +243,24 @@ const GameplayScreen = (props) => {
 
   useEffect(() => {
     shuffle(finalAnswers);
-  }, [finalAnswers]);
+    setIsLoading(false);
+  }, [finalAnswers, isLoading]);
 
   return (
     <Container pt="3rem" px="0" maxW="100%">
-      <StartGameTimer startTimer={startTimer} />
+      {startTimer !== null && <StartGameTimer startTimer={startTimer} />}
 
-      {!isLoading && (
+      {startTimer === null && (
         <Container p="0" maxW="100%">
           <ProgressBar GameTimer={GameTimer} />
           <Lives GameLives={lives} />
 
           <GameScore score={score} />
 
-          <PokemonImage pokemonSprite={pokemonData.sprite} />
+          <PokemonImage
+            pokemonSprite={pokemonData.sprite}
+            difficulty={props.difficulty}
+          />
 
           <Center flexDir="column" gap="1rem">
             <ButtonDefault onClick={() => answerHandler(answersOrder[0])}>

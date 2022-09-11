@@ -1,13 +1,24 @@
 import ButtonDefault from "../UI/ButtonDefault";
 
 import { Container, Text, Center, Image } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
-import PokemonLogo from "../../public/img/pokemon-logo.png";
-import GuessLogo from "../../public/img/guess-logo.png";
 import { useEffect, useState } from "react";
 
 const MenuScreen = (props) => {
   const [highScore, setHighScore] = useState(0);
+
+  const pokemonTitleVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+    },
+    leave: {
+      width: 0,
+    },
+  };
 
   useEffect(() => {
     if (localStorage.getItem("highScore") === null) {
@@ -21,8 +32,25 @@ const MenuScreen = (props) => {
   return (
     <Container m="0 auto" pt="3rem">
       <Center flexDir="column">
-        <Image src="./img/pokemon-logo.png" alt="Pokemon log" w="400px" />
-        <Image src="./img/guess-logo.png" w="400px" />
+        <Image
+          src="./img/pokemon-logo.png"
+          alt="Pokemon log"
+          w="400px"
+          as={motion.img}
+          variants={pokemonTitleVariants}
+          initial="hidden"
+          animate="visible"
+          exit="leave"
+        />
+        <Image
+          src="./img/guess-logo.png"
+          w="400px"
+          as={motion.img}
+          variants={pokemonTitleVariants}
+          initial="hidden"
+          animate="visible"
+          exit="leave"
+        />
       </Center>
 
       <Center>
@@ -31,8 +59,17 @@ const MenuScreen = (props) => {
       <ButtonDefault
         onClick={() => props.onPlayGame(true)}
         style={{ marginTop: "2rem" }}
+        delayTime=".02"
       >
         Play
+      </ButtonDefault>
+
+      <ButtonDefault
+        onClick={() => props.onInstructions(true)}
+        style={{ marginTop: "1rem" }}
+        delayTime=".08"
+      >
+        Instructions
       </ButtonDefault>
     </Container>
   );
