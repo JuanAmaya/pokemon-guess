@@ -1,5 +1,5 @@
 import theme from "../styles/theme";
-import ToggleColorMode from "../components/UI/ToggleColorMode";
+import ChangeColorMode from "../components/UI/ChangeColorMode";
 
 import { ColorModeScript } from "@chakra-ui/react";
 
@@ -60,7 +60,7 @@ export default function Home() {
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       </header>
       <main>
-        <ToggleColorMode />
+        <ChangeColorMode />
         {!playGame &&
           !gameOver &&
           !openInstructions &&
