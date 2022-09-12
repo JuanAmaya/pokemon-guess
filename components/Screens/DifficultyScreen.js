@@ -1,8 +1,10 @@
-import { Container, Center, Text } from "@chakra-ui/react";
+import { Container, Center, Text, useColorModeValue } from "@chakra-ui/react";
 import ButtonDefault from "../UI/ButtonDefault";
 import { motion, AnimatePresence } from "framer-motion";
 
 const DifficultyScreen = (props) => {
+  const difficultyBG = useColorModeValue("arceusSand.500", "#1A1B16");
+
   const difficultyTitleVariants = {
     hidden: {
       opacity: 0,
@@ -30,7 +32,7 @@ const DifficultyScreen = (props) => {
   };
 
   return (
-    <Center pt="10rem" flexDir="column" gap="1rem">
+    <Center pt="9rem" flexDir="column" gap="1rem">
       <Text
         fontSize="4xl"
         as={motion.p}
@@ -38,6 +40,10 @@ const DifficultyScreen = (props) => {
         initial="hidden"
         animate="visible"
         exit="leave"
+        bg={difficultyBG}
+        py="1rem"
+        px="2rem"
+        borderRadius="10px"
       >
         Select the difficulty
       </Text>

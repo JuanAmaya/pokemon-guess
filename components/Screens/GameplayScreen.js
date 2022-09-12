@@ -20,6 +20,7 @@ const GameplayScreen = (props) => {
   const [adjustAnswers, setAdjustAnswers] = useState([]);
   const [finalAnswers, setFinalAnswers] = useState([]);
   const [answersOrder, setAnswersOrder] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState(false);
 
   // Fetch905 Pokemon
   const { sendRequest: fetchPokemonHandler } = useHttp();
@@ -137,7 +138,6 @@ const GameplayScreen = (props) => {
     );
   };
 
-  // Poner las respuestas en los botones
   useEffect(() => {
     if (answers.length % 3 === 0 && answers.length !== 0) {
       for (let i = answers.length - 3; i < answers.length; i++) {
