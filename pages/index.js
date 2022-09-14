@@ -2,7 +2,6 @@ import theme from "../styles/theme";
 import ChangeColorMode from "../components/UI/ChangeColorMode";
 
 import { ColorModeScript } from "@chakra-ui/react";
-import { motion, AnimatePresence } from "framer-motion";
 
 import Head from "next/head";
 import MenuScreen from "../components/Screens/MenuScreen";
@@ -62,66 +61,64 @@ export default function Home() {
       </header>
       <main>
         <ChangeColorMode />
-        <AnimatePresence>
-          {!playGame &&
-            !gameOver &&
-            !openInstructions &&
-            !easyMode &&
-            !hardMode && (
-              <MenuScreen
-                onPlayGame={playGameHandler}
-                onInstructions={instructionsHandler}
-              />
-            )}
-
-          {playGame && !gameOver && !openInstructions && (
-            <DifficultyScreen
-              onEasyMode={easyModeHandler}
-              onHardMode={hardModeHandler}
+        {!playGame &&
+          !gameOver &&
+          !openInstructions &&
+          !easyMode &&
+          !hardMode && (
+            <MenuScreen
               onPlayGame={playGameHandler}
+              onInstructions={instructionsHandler}
             />
           )}
 
-          {easyMode && !hardMode && !gameOver && !openInstructions && (
-            <GameplayScreen
+        {playGame && !gameOver && !openInstructions && (
+          <DifficultyScreen
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
+            onPlayGame={playGameHandler}
+          />
+        )}
+
+        {easyMode && !hardMode && !gameOver && !openInstructions && (
+          <GameplayScreen
+            onGameOver={gameOverHandler}
+            onMatchScore={matchScoreHandler}
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
+            onDifficultyOver={difficultyOverHandler}
+            difficulty={"easy"}
+          />
+        )}
+        {hardMode && !easyMode && !gameOver && !openInstructions && (
+          <GameplayScreen
+            onGameOver={gameOverHandler}
+            onMatchScore={matchScoreHandler}
+            onEasyMode={easyModeHandler}
+            onHardMode={hardModeHandler}
+            onDifficultyOver={difficultyOverHandler}
+            difficulty={"hard"}
+          />
+        )}
+
+        {gameOver &&
+          !playGame &&
+          !openInstructions &&
+          !easyMode &&
+          !hardMode && (
+            <GameOverScreen
               onGameOver={gameOverHandler}
-              onMatchScore={matchScoreHandler}
+              onPlayGame={playGameHandler}
               onEasyMode={easyModeHandler}
               onHardMode={hardModeHandler}
-              onDifficultyOver={difficultyOverHandler}
-              difficulty={"easy"}
-            />
-          )}
-          {hardMode && !easyMode && !gameOver && !openInstructions && (
-            <GameplayScreen
-              onGameOver={gameOverHandler}
-              onMatchScore={matchScoreHandler}
-              onEasyMode={easyModeHandler}
-              onHardMode={hardModeHandler}
-              onDifficultyOver={difficultyOverHandler}
-              difficulty={"hard"}
+              difficulty={modeBeforeGO}
+              matchScore={matchScore}
             />
           )}
 
-          {gameOver &&
-            !playGame &&
-            !openInstructions &&
-            !easyMode &&
-            !hardMode && (
-              <GameOverScreen
-                onGameOver={gameOverHandler}
-                onPlayGame={playGameHandler}
-                onEasyMode={easyModeHandler}
-                onHardMode={hardModeHandler}
-                difficulty={modeBeforeGO}
-                matchScore={matchScore}
-              />
-            )}
-
-          {openInstructions && (
-            <InstructionScreen onInstructions={instructionsHandler} />
-          )}
-        </AnimatePresence>
+        {openInstructions && (
+          <InstructionScreen onInstructions={instructionsHandler} />
+        )}
       </main>
     </div>
   );
