@@ -60,10 +60,14 @@ const GameOverScreen = (props) => {
 
   useEffect(() => {
     const currentHighScore = JSON.parse(localStorage.getItem("highScore"));
+    const currentTotalScore = JSON.parse(localStorage.getItem("totalScore"));
     if (props.matchScore > currentHighScore || currentHighScore === undefined) {
       console.log("Nuevo record");
       localStorage.setItem("highScore", JSON.stringify(props.matchScore));
     }
+    const addScore = props.matchScore + currentTotalScore;
+    localStorage.setItem("highScore", JSON.stringify(props.matchScore));
+    localStorage.setItem("totalScore", JSON.stringify(addScore));
   }, [props.matchScore]);
 
   const redText = useColorModeValue("red.500", "red.600");

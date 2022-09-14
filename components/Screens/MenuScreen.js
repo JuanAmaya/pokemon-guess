@@ -4,9 +4,11 @@ import { Container, Text, Center, Image } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useEffect, useState } from "react";
+import LevelBar from "../UI/LevelBar";
 
 const MenuScreen = (props) => {
   const [highScore, setHighScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
 
   const pokemonTitleVariants = {
     hidden: {
@@ -26,6 +28,15 @@ const MenuScreen = (props) => {
     } else {
       const currentHighScore = JSON.parse(localStorage.getItem("highScore"));
       setHighScore(currentHighScore);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("totalScore") === null) {
+      localStorage.setItem("totalScore", JSON.stringify(totalScore));
+    } else {
+      const currentTotalScore = JSON.parse(localStorage.getItem("totalScore"));
+      setTotalScore((prevScore) => prevScore + currentTotalScore);
     }
   }, []);
 
@@ -56,6 +67,10 @@ const MenuScreen = (props) => {
       <Center>
         <Text fontSize="2xl">High Score: {highScore}</Text>
       </Center>
+      <Center>
+        <LevelBar scoreProgress={totalScore} />
+      </Center>
+
       <ButtonDefault
         onClick={() => props.onPlayGame(true)}
         style={{ marginTop: "2rem" }}

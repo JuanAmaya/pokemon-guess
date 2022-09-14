@@ -20,9 +20,8 @@ const GameplayScreen = (props) => {
   const [adjustAnswers, setAdjustAnswers] = useState([]);
   const [finalAnswers, setFinalAnswers] = useState([]);
   const [answersOrder, setAnswersOrder] = useState([]);
-  const [correctAnswer, setCorrectAnswer] = useState(false);
 
-  // Fetch905 Pokemon
+  // Fetch 899 Pokemon
   const { sendRequest: fetchPokemonHandler } = useHttp();
 
   useEffect(() => {
@@ -42,7 +41,7 @@ const GameplayScreen = (props) => {
 
     fetchPokemonHandler(
       {
-        url: "https://pokeapi.co/api/v2/pokemon/?limit=905",
+        url: "https://pokeapi.co/api/v2/pokemon/?limit=898",
       },
       transformPokemon
     );
@@ -190,11 +189,9 @@ const GameplayScreen = (props) => {
   };
 
   const loadNextGuess = () => {
-    // setAnswers([]);
     firstWrongOptionFetch();
     secondWrongOptionFetch();
     correctOptionFetch();
-    // setGameTimer(10);
   };
 
   useEffect(() => {
@@ -246,6 +243,17 @@ const GameplayScreen = (props) => {
     setIsLoading(false);
   }, [finalAnswers, isLoading]);
 
+  const animationOption = (e) => {
+    if ((pokemonData.name !== e.target.innerText.toLowerCase()) && GameTimer > 0) {
+      e.target.style.animationDuration = ".5s";
+      e.target.style.animationName = "wrongOptionAnimation";
+    }
+
+    setTimeout(() => {
+      e.target.style.animationName = "";
+    }, 500);
+  }
+
   return (
     <Container pt="3rem" px="0" maxW="100%">
       {startTimer !== null && <StartGameTimer startTimer={startTimer} />}
@@ -263,13 +271,13 @@ const GameplayScreen = (props) => {
           />
 
           <Center flexDir="column" gap="1rem">
-            <ButtonDefault onClick={() => answerHandler(answersOrder[0])}>
+            <ButtonDefault onClick={(e) => {animationOption(e); answerHandler(answersOrder[0])}}>
               {answersOrder[0]}
             </ButtonDefault>
-            <ButtonDefault onClick={() => answerHandler(answersOrder[1])}>
+            <ButtonDefault onClick={(e) => {animationOption(e); answerHandler(answersOrder[1])}}>
               {answersOrder[1]}
             </ButtonDefault>
-            <ButtonDefault onClick={() => answerHandler(answersOrder[2])}>
+            <ButtonDefault onClick={(e) => {animationOption(e); answerHandler(answersOrder[2])}}>
               {answersOrder[2]}
             </ButtonDefault>
           </Center>

@@ -40,7 +40,6 @@ const DifficultyScreen = (props) => {
         initial="hidden"
         animate="visible"
         exit="leave"
-        bg={difficultyBG}
         py="1rem"
         px="2rem"
         borderRadius="10px"

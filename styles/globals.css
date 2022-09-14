@@ -22,3 +22,17 @@ a {
 .correctAnswer {
   background-color: green;
 }
+
+@keyframes wrongOptionAnimation {
+  0% { transform: translateX(0) }
+  25% { transform: translateX(5px) }
+  50% { transform: translateX(-5px) }
+  75% { transform: translateX(5px) } 
+  100% { transform: translateX(0) }
+} 
+
+@keyframes CorrectOptionAnimation {
+  0%     {background-color:#ff4343;}
+  50.0%  {background-color:rgb(247, 26, 26);}
+  100.0%  {background-color:"";}
+}
