@@ -64,9 +64,9 @@ const MenuScreen = (props) => {
         />
       </Center>
 
-      <Center>
+      {/* <Center>
         <Text fontSize="2xl">High Score: {highScore}</Text>
-      </Center>
+      </Center> */}
       <Center>
         <LevelBar scoreProgress={totalScore} />
       </Center>

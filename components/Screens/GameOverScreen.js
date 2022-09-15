@@ -65,7 +65,12 @@ const GameOverScreen = (props) => {
       console.log("Nuevo record");
       localStorage.setItem("highScore", JSON.stringify(props.matchScore));
     }
-    const addScore = props.matchScore + currentTotalScore;
+    const addScore = 0;
+    if (props.difficulty !== "easy") {
+      addScore = props.matchScore * 2 + currentTotalScore;
+    } else {
+      addScore = props.matchScore + currentTotalScore;
+    }
     localStorage.setItem("highScore", JSON.stringify(props.matchScore));
     localStorage.setItem("totalScore", JSON.stringify(addScore));
   }, [props.matchScore]);
@@ -125,8 +130,12 @@ const GameOverScreen = (props) => {
         initial="hidden"
         animate="visible"
         exit="leave"
+        textAlign="center"
       >
-        Score: {props.matchScore}
+        Score: {props.matchScore}{" "}
+        {props.difficulty !== "easy" && (
+          <Text textAlign="center">Bonus x 2 = {props.matchScore * 2}</Text>
+        )}
       </Text>
       <Center flexDir="column" gap="1rem">
         <ButtonDefault onClick={playAgainHandler} delayTime=".2">
