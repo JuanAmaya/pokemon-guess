@@ -44,22 +44,23 @@ const PokemonImage = (props) => {
 
   return (
     <Center
-    bg={imageBG}
-    borderRadius="3rem"
-    w="150px"
-    h="150px"
-    m="2rem auto"
-    overflow="hidden"
-    as={motion.div}
-    variants={backgroundVariants}
-    initial="hidden"
-    animate="visible"
-    exit="leave"
+      bg={imageBG}
+      borderRadius="3rem"
+      w="150px"
+      maxH={props.differentH !== undefined ? props.differentH : "150px"}
+      m="2rem auto"
+      overflow="hidden"
+      as={motion.div}
+      variants={backgroundVariants}
+      initial="hidden"
+      animate="visible"
+      exit="leave"
     >
       <AnimatePresence>
         <Image
           key={props.pokemonSprite}
           src={props.pokemonSprite}
+          style={props.style}
           alt="Guess"
           w="150px"
           filter={props.difficulty === "easy" ? "" : "brightness(0%)"}
