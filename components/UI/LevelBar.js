@@ -1,6 +1,7 @@
-import { Progress, Container, Text, Image } from "@chakra-ui/react";
+import { Container, Text, Image, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const LevelBar = (props) => {
   const progressBG = useColorModeValue("arceusSand.500", "arceusBlue.200");
@@ -9,42 +10,95 @@ const LevelBar = (props) => {
 
   const [level, setLevel] = useState(1);
   const [scoreConverted, setScoreConverted] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
 
   useEffect(() => {
-    if (props.scoreProgress < 10) {
-      setScoreConverted((props.scoreProgress * 100) / 10);
-    } else if (props.scoreProgress < 50) {
-      setScoreConverted((props.scoreProgress * 100) / 50);
+    if (localStorage.getItem("totalScore") === null) {
+      localStorage.setItem("totalScore", JSON.stringify(totalScore));
+    } else {
+      const currentTotalScore = JSON.parse(localStorage.getItem("totalScore"));
+      setTotalScore((prevScore) => prevScore + currentTotalScore);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (totalScore < 10) {
+      setScoreConverted((totalScore * 100) / 10);
+    } else if (totalScore < 50) {
+      setScoreConverted((totalScore * 100) / 50);
       setLevel(2);
-    } else if (props.scoreProgress < 100) {
-      setScoreConverted((props.scoreProgress * 100) / 100);
+    } else if (totalScore < 100) {
+      setScoreConverted((totalScore * 100) / 100);
       setLevel(3);
-    } else if (props.scoreProgress < 200) {
-      setScoreConverted((props.scoreProgress * 100) / 200);
+    } else if (totalScore < 200) {
+      setScoreConverted((totalScore * 100) / 200);
       setLevel(4);
-    } else if (props.scoreProgress < 500) {
-      setScoreConverted((props.scoreProgress * 100) / 500);
+    } else if (totalScore < 500) {
+      setScoreConverted((totalScore * 100) / 500);
       setLevel(5);
-    } else if (props.scoreProgress < 1000) {
-      setScoreConverted((props.scoreProgress * 100) / 1000);
+    } else if (totalScore < 1000) {
+      setScoreConverted((totalScore * 100) / 1000);
       setLevel(6);
-    } else if (props.scoreProgress < 2000) {
-      setScoreConverted((props.scoreProgress * 100) / 2000);
+    } else if (totalScore < 2000) {
+      setScoreConverted((totalScore * 100) / 2000);
       setLevel(7);
-    } else if (props.scoreProgress < 3000) {
-      setScoreConverted((props.scoreProgress * 100) / 3000);
+    } else if (totalScore < 3000) {
+      setScoreConverted((totalScore * 100) / 3000);
       setLevel(8);
-    } else if (props.scoreProgress < 5000) {
-      setScoreConverted((props.scoreProgress * 100) / 5000);
+    } else if (totalScore < 5000) {
+      setScoreConverted((totalScore * 100) / 5000);
       setLevel(9);
-    } else if (props.scoreProgress < 10000) {
-      setScoreConverted((props.scoreProgress * 100) / 10000);
+    } else if (totalScore < 10000) {
+      setScoreConverted((totalScore * 100) / 10000);
       setLevel(10);
-    } else if (props.scoreProgress > 10000) {
+    } else if (totalScore > 10000) {
       setScoreConverted(100);
       setLevel("MAX");
     }
-  }, [props.scoreProgress]);
+  }, [totalScore]);
+
+  const levelBarVariants = {
+    hidden: {
+      width: 0,
+    },
+    visible: {
+      width: "90%",
+    },
+    leave: {
+      width: 0,
+    },
+  };
+
+  const imageVariants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+    },
+    leave: {
+      opacity: 0,
+    },
+  };
+
+  const scoreBarVariants = {
+    hidden: {
+      width: 0,
+    },
+    visible: {
+      width: `${scoreConverted}%`,
+      transition: {
+        duration: 0.3,
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+        mass: 0.6,
+      },
+    },
+    leave: {
+      width: 0,
+    },
+  };
 
   return (
     <Container p="0" pt="2rem">
@@ -56,6 +110,11 @@ const LevelBar = (props) => {
         bg={levelBG}
         position="relative"
         left=".7rem"
+        as={motion.div}
+        variants={levelBarVariants}
+        initial="hidden"
+        animate="visible"
+        exit="leave"
       >
         <Image
           src={`./img/level-profile/${level}.png`}
@@ -66,11 +125,16 @@ const LevelBar = (props) => {
           borderRadius="50%"
           left="-2rem"
           top="-1.5rem"
+          as={motion.img}
+          variants={imageVariants}
+          initial="hidden"
+          animate="visible"
+          exit="leave"
         />
         <Text
           m="0"
           pt=".7rem"
-          pl="6rem"
+          pl="4.5rem"
           w={`${scoreConverted}%`}
           h="50px"
           bg={progressBG}
@@ -79,6 +143,11 @@ const LevelBar = (props) => {
           whiteSpace="nowrap"
           fontWeight="bold"
           fontSize="1.2rem"
+          as={motion.p}
+          variants={scoreBarVariants}
+          initial="hidden"
+          animate="visible"
+          exit="leave"
         >
           Lvl. {level}
         </Text>

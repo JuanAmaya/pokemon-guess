@@ -3,6 +3,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import ButtonDefault from "../UI/ButtonDefault";
 import { motion, AnimatePresence } from "framer-motion";
+import LevelBar from "../UI/LevelBar";
 
 const GameOverScreen = (props) => {
   const psyduckVariants = {
@@ -51,6 +52,26 @@ const GameOverScreen = (props) => {
       opacity: 1,
       transition: {
         delay: 0.4,
+      },
+    },
+    leave: {
+      width: 0,
+    },
+  };
+
+  const bonusScoreVariants = {
+    hidden: {
+      opacity: 0,
+      fontSize: "20rem",
+      position: "absolute",
+    },
+    visible: {
+      opacity: 1,
+      fontSize: "1.4rem",
+      position: "relative",
+      transition: {
+        delay: 0.2,
+        duration: 0.3,
       },
     },
     leave: {
@@ -134,9 +155,19 @@ const GameOverScreen = (props) => {
       >
         Score: {props.matchScore}{" "}
         {props.difficulty !== "easy" && (
-          <Text textAlign="center">Bonus x 2 = {props.matchScore * 2}</Text>
+          <Text
+            textAlign="center"
+            as={motion.p}
+            variants={bonusScoreVariants}
+            initial="hidden"
+            animate="visible"
+            exit="leave"
+          >
+            Bonus x 2 = {props.matchScore * 2}
+          </Text>
         )}
       </Text>
+
       <Center flexDir="column" gap="1rem">
         <ButtonDefault onClick={playAgainHandler} delayTime=".2">
           Play Again
