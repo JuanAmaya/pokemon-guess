@@ -1,10 +1,13 @@
 import { Container, Text, Center, Progress } from "@chakra-ui/react";
 import { useColorModeValue } from "@chakra-ui/react";
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { useEffect } from "react";
 import { useState } from "react";
 import Lives from "../GameAssets/Lives";
 import PokemonImage from "../GameAssets/PokemonImage";
 import ButtonDefault from "../UI/ButtonDefault";
+import { motion, AnimatePresence } from "framer-motion";
+import PageDotIndicator from "../UI/PageDotIndicator";
 
 const InstructionScreen = (props) => {
   const titleBG = useColorModeValue("arceusSand.500", "arceusBlue.200");
@@ -14,24 +17,25 @@ const InstructionScreen = (props) => {
   const [instructionPage, setInstructionPage] = useState(0);
   const [instructionTitle, setInstructionTitle] = useState("");
   const [pageContent, setPageContent] = useState("");
-  const [GameTimer, setGameTimer] = useState(60);
+  const [gameTimer, setGameTimer] = useState(60);
   const [barPage, setBarPage] = useState(false);
+  const [instructionsDirection, setInstructionsDirection] = useState(500);
 
   useEffect(() => {
-    if (GameTimer <= 0) {
+    if (gameTimer <= 0) {
       setGameTimer(60);
     }
 
-    if (!GameTimer) return;
+    if (!gameTimer) return;
 
     const intervalId = setInterval(() => {
       if (barPage) {
-        setGameTimer(GameTimer - 0.02);
+        setGameTimer(gameTimer - 0.02);
       }
     }, 20);
 
     return () => clearInterval(intervalId);
-  }, [GameTimer, barPage]);
+  }, [gameTimer, barPage]);
 
   useEffect(() => {
     switch (instructionPage) {
@@ -39,35 +43,35 @@ const InstructionScreen = (props) => {
         setBarPage(false);
         setInstructionTitle("Guess all the Pokemon");
         setPageContent(
-          <Container>
+          <Container pb="2rem">
             <PokemonImage
               pokemonSprite="./img/psyduck.png"
               difficulty="easy"
               differentH="100px"
-              style={{ "max-width": "50px" }}
+              style={{ maxWidth: "50px" }}
             />
 
             <Center flexDir="column" gap="1rem">
               <ButtonDefault
                 style={{
-                  "font-size": "1.2rem",
-                  "max-height": "2.3rem",
+                  fontSize: "1.2rem",
+                  maxHeight: "2.3rem",
                 }}
               >
                 Ditto
               </ButtonDefault>
               <ButtonDefault
                 style={{
-                  "font-size": "1.2rem",
-                  "max-height": "2.3rem",
+                  fontSize: "1.2rem",
+                  maxHeight: "2.3rem",
                 }}
               >
                 Psyduck
               </ButtonDefault>
               <ButtonDefault
                 style={{
-                  "font-size": "1.2rem",
-                  "max-height": "2.3rem",
+                  fontSize: "1.2rem",
+                  maxHeight: "2.3rem",
                 }}
               >
                 Torchic
@@ -83,7 +87,7 @@ const InstructionScreen = (props) => {
         setPageContent(
           <Progress
             max="60"
-            value={GameTimer}
+            value="40"
             colorScheme="yellow"
             w="90%"
             display="flex"
@@ -141,29 +145,94 @@ const InstructionScreen = (props) => {
 
   const backwardsHandler = () => {
     if (instructionPage > 0) {
+      setInstructionsDirection(-500);
       setInstructionPage((prevPage) => prevPage - 1);
     }
   };
 
   const forwardHandler = () => {
     if (instructionPage < 5) {
+      setInstructionsDirection(500);
       setInstructionPage((prevPage) => prevPage + 1);
     }
   };
 
+  const instructionsVariants = {
+    hidden: {
+      x: `${instructionsDirection}`,
+    },
+    visible: {
+      x: 0,
+      display: "flex",
+      transition: {
+        delay: 0.1,
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+        mass: 0.6,
+      },
+    },
+    leave: {
+      x: -500,
+      display: "none",
+    },
+  };
+
   return (
     <Container>
-      <Center bg={titleBG} w="100%" h="4rem" borderRadius="5px" mt="4rem">
-        <Text fontSize="3xl" textAlign="center" color={textColor}>
-          {instructionTitle}
-        </Text>
+      <Center
+        bg={titleBG}
+        w="100%"
+        h="4rem"
+        borderRadius="5px"
+        mt="4rem"
+        overflow="hidden"
+      >
+        <AnimatePresence>
+          <Text
+            key={instructionTitle}
+            fontSize="3xl"
+            whiteSpace="nowrap"
+            color={textColor}
+            as={motion.p}
+            variants={instructionsVariants}
+            initial="hidden"
+            animate="visible"
+            exit="leave"
+          >
+            {instructionTitle}
+          </Text>
+        </AnimatePresence>
       </Center>
-      <Center bg={instructionsBG} mt="1rem" h="55vh" borderRadius="5px">
-        {pageContent}
+      <Center
+        bg={instructionsBG}
+        mt="1rem"
+        h="55vh"
+        borderRadius="5px"
+        overflow="hidden"
+        flexDir="column"
+        gap=".5rem"
+        pos="relative"
+      >
+        <Center
+          key={instructionTitle}
+          as={motion.div}
+          variants={instructionsVariants}
+          initial="hidden"
+          animate="visible"
+          exit="leave"
+        >
+          {pageContent}
+        </Center>
+        {/* <PageDotIndicator /> */}
       </Center>
       <Center gap="1rem" mt="1rem">
-        <ButtonDefault onClick={backwardsHandler}>Atras</ButtonDefault>
-        <ButtonDefault onClick={forwardHandler}>Adelante</ButtonDefault>
+        <ButtonDefault onClick={backwardsHandler}>
+          <ArrowLeftIcon />
+        </ButtonDefault>
+        <ButtonDefault onClick={forwardHandler}>
+          <ArrowRightIcon />
+        </ButtonDefault>
       </Center>
       <ButtonDefault
         onClick={() => props.onInstructions(false)}
