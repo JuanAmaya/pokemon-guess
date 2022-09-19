@@ -1,6 +1,6 @@
 import { Container, Text, Center, Progress } from "@chakra-ui/react";
 import { useColorModeValue } from "@chakra-ui/react";
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon } from "@chakra-ui/icons";
 import { useEffect } from "react";
 import { useState } from "react";
 import Lives from "../GameAssets/Lives";
@@ -23,7 +23,7 @@ const InstructionScreen = (props) => {
 
   useEffect(() => {
     if (gameTimer <= 0) {
-      setGameTimer(60);
+      // setGameTimer(60);
     }
 
     if (!gameTimer) return;
@@ -36,6 +36,7 @@ const InstructionScreen = (props) => {
 
     return () => clearInterval(intervalId);
   }, [gameTimer, barPage]);
+
 
   useEffect(() => {
     switch (instructionPage) {
@@ -85,16 +86,32 @@ const InstructionScreen = (props) => {
         setBarPage(true);
         setInstructionTitle("You have 1 minute");
         setPageContent(
-          <Progress
-            max="60"
-            value="40"
-            colorScheme="yellow"
+          <Center>  
+            <Container
+            pos="absolute"
             w="90%"
-            display="flex"
-            justifyContent="center"
-            borderRadius="0 0 20px 20px"
             h="1rem"
-          />
+            borderRadius="0 0 20px 20px"
+            bg="gray"
+            >
+            <Container
+              w="50%"
+              h="1rem"
+              bg="yellow"
+              borderRadius="0 0 20px 20px"
+            />
+          </Container>
+        </Center>
+      //   <Progress
+      //   max="60"
+      //   value="40"
+      //   colorScheme="yellow"
+      //   w="90%"
+      //   display="flex"
+      //   justifyContent="center"
+      //   borderRadius="0 0 20px 20px"
+      //   h="1rem"
+      // />
         );
         break;
 
@@ -179,7 +196,7 @@ const InstructionScreen = (props) => {
   };
 
   return (
-    <Container>
+    <Container> 
       <Center
         bg={titleBG}
         w="100%"
@@ -208,6 +225,7 @@ const InstructionScreen = (props) => {
         bg={instructionsBG}
         mt="1rem"
         h="55vh"
+        w="100%"
         borderRadius="5px"
         overflow="hidden"
         flexDir="column"
@@ -230,16 +248,14 @@ const InstructionScreen = (props) => {
         <ButtonDefault onClick={backwardsHandler}>
           <ArrowLeftIcon />
         </ButtonDefault>
+        <ButtonDefault onClick={() => props.onInstructions(false)}>
+          {/* <CheckIcon /> */}
+          Menu
+        </ButtonDefault>
         <ButtonDefault onClick={forwardHandler}>
           <ArrowRightIcon />
         </ButtonDefault>
       </Center>
-      <ButtonDefault
-        onClick={() => props.onInstructions(false)}
-        style={{ marginTop: "1rem" }}
-      >
-        Menu
-      </ButtonDefault>
     </Container>
   );
 };
