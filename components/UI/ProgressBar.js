@@ -1,5 +1,6 @@
 import { Progress } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useEffect } from "react";
 
 const ProgressBar = (props) => {
   const timerVariants = {
@@ -17,6 +18,10 @@ const ProgressBar = (props) => {
     },
   };
 
+  useEffect(() => {
+    console.log(props.GameTimer);
+  }, [props.GameTimer]);
+
   return (
     <AnimatePresence>
       <Progress
@@ -29,7 +34,7 @@ const ProgressBar = (props) => {
         justifyContent="center"
         alignItems="center"
         position="absolute"
-        top="0"
+        top={props.diffTop !== undefined ? props.diffTop : 0}
         borderRadius="0 0 20px 20px"
         variants={timerVariants}
         initial="hidden"

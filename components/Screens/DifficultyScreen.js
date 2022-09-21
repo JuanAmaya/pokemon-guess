@@ -1,8 +1,15 @@
 import { Container, Center, Text, useColorModeValue } from "@chakra-ui/react";
 import ButtonDefault from "../UI/ButtonDefault";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+import en from "../locales/en";
+import es from "../locales/es";
 
 const DifficultyScreen = (props) => {
+  const router = useRouter();
+  const { locale } = router;
+  const l = locale === "en" ? en : es;
+
   const difficultyBG = useColorModeValue("arceusSand.500", "#1A1B16");
 
   const difficultyTitleVariants = {
@@ -44,7 +51,7 @@ const DifficultyScreen = (props) => {
         px="2rem"
         borderRadius="10px"
       >
-        Select the difficulty
+        {l.selectDiff}
       </Text>
 
       <Container mb="2rem">
@@ -53,7 +60,7 @@ const DifficultyScreen = (props) => {
           style={{ marginTop: "1rem" }}
           colorSch="easyMode"
         >
-          Easy
+          {l.easyButton}
         </ButtonDefault>
 
         <ButtonDefault
@@ -61,12 +68,12 @@ const DifficultyScreen = (props) => {
           style={{ marginTop: "1rem" }}
           colorSch="hardMode"
         >
-          Hard
+          {l.hardButton}
         </ButtonDefault>
       </Container>
 
       <ButtonDefault onClick={menuHandler} style={{ marginTop: "1rem" }}>
-        Menu
+        {l.menuButton}
       </ButtonDefault>
     </Center>
   );

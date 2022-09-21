@@ -1,13 +1,28 @@
 import ButtonDefault from "../UI/ButtonDefault";
 
-import { Container, Text, Center, Image } from "@chakra-ui/react";
+import { Container, Text, Center, Image, Select } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import LevelBar from "../UI/LevelBar";
 
+import en from "../locales/en";
+import es from "../locales/es";
+
 const MenuScreen = (props) => {
+  const router = useRouter();
+  const { locale } = router;
+  const l = locale === "en" ? en : es;
+
   const [highScore, setHighScore] = useState(0);
+
+  const changeLanguage = (e) => {
+    e.preventDefault();
+    const locale = e.target.value;
+    router.push("/", "/", { locale: locale });
+    console.log(router);
+  };
 
   const pokemonTitleVariants = {
     hidden: {
@@ -66,7 +81,7 @@ const MenuScreen = (props) => {
         style={{ marginTop: "2rem" }}
         delayTime=".02"
       >
-        Play
+        {l.playButton}
       </ButtonDefault>
 
       <ButtonDefault
@@ -74,8 +89,12 @@ const MenuScreen = (props) => {
         style={{ marginTop: "1rem" }}
         delayTime=".08"
       >
-        Instructions
+        {l.instructionsButton}
       </ButtonDefault>
+      <Select onChange={changeLanguage} defaultValue={locale}>
+        <option value="en">EN</option>
+        <option value="es">ES</option>
+      </Select>
     </Container>
   );
 };

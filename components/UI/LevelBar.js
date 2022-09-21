@@ -2,8 +2,15 @@ import { Container, Text, Image, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useColorModeValue } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/router";
+import en from "../locales/en";
+import es from "../locales/es";
 
 const LevelBar = (props) => {
+  const router = useRouter();
+  const { locale } = router;
+  const l = locale === "en" ? en : es;
+
   const progressBG = useColorModeValue("arceusSand.500", "arceusBlue.200");
   const progressFont = useColorModeValue("arceusBlue.200", "arceusSand.500");
   const levelBG = useColorModeValue("#E3E4E7", "#282929");
@@ -149,7 +156,7 @@ const LevelBar = (props) => {
           animate="visible"
           exit="leave"
         >
-          Lvl. {level}
+          {l.levelTag} {level}
         </Text>
       </Container>
     </Container>

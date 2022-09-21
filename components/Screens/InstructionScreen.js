@@ -8,8 +8,16 @@ import PokemonImage from "../GameAssets/PokemonImage";
 import ButtonDefault from "../UI/ButtonDefault";
 import { motion, AnimatePresence } from "framer-motion";
 import PageDotIndicator from "../UI/PageDotIndicator";
+import ProgressBar from "../UI/ProgressBar";
+import { useRouter } from "next/router";
+import en from "../locales/en";
+import es from "../locales/es";
 
 const InstructionScreen = (props) => {
+  const router = useRouter();
+  const { locale } = router;
+  const l = locale === "en" ? en : es;
+
   const titleBG = useColorModeValue("arceusSand.500", "arceusBlue.200");
   const textColor = useColorModeValue("arceusBlue.200", "arceusSand.500");
   const instructionsBG = useColorModeValue("#E3E4E7", "#282929");
@@ -23,7 +31,7 @@ const InstructionScreen = (props) => {
 
   useEffect(() => {
     if (gameTimer <= 0) {
-      // setGameTimer(60);
+      setGameTimer(60);
     }
 
     if (!gameTimer) return;
@@ -37,12 +45,11 @@ const InstructionScreen = (props) => {
     return () => clearInterval(intervalId);
   }, [gameTimer, barPage]);
 
-
   useEffect(() => {
     switch (instructionPage) {
       case 0:
         setBarPage(false);
-        setInstructionTitle("Guess all the Pokemon");
+        setInstructionTitle(`${l.pokemonTitle}`);
         setPageContent(
           <Container pb="2rem">
             <PokemonImage
@@ -57,6 +64,7 @@ const InstructionScreen = (props) => {
                 style={{
                   fontSize: "1.2rem",
                   maxHeight: "2.3rem",
+                  pointerEvents: "none",
                 }}
               >
                 Ditto
@@ -65,6 +73,7 @@ const InstructionScreen = (props) => {
                 style={{
                   fontSize: "1.2rem",
                   maxHeight: "2.3rem",
+                  pointerEvents: "none",
                 }}
               >
                 Psyduck
@@ -73,6 +82,7 @@ const InstructionScreen = (props) => {
                 style={{
                   fontSize: "1.2rem",
                   maxHeight: "2.3rem",
+                  pointerEvents: "none",
                 }}
               >
                 Torchic
@@ -84,60 +94,43 @@ const InstructionScreen = (props) => {
 
       case 1:
         setBarPage(true);
-        setInstructionTitle("You have 1 minute");
+        setInstructionTitle(`${l.timeTitle}`);
         setPageContent(
-          <Center>  
-            <Container
-            pos="absolute"
-            w="90%"
-            h="1rem"
-            borderRadius="0 0 20px 20px"
-            bg="gray"
-            >
-            <Container
-              w="50%"
-              h="1rem"
-              bg="yellow"
-              borderRadius="0 0 20px 20px"
-            />
-          </Container>
-        </Center>
-      //   <Progress
-      //   max="60"
-      //   value="40"
-      //   colorScheme="yellow"
-      //   w="90%"
-      //   display="flex"
-      //   justifyContent="center"
-      //   borderRadius="0 0 20px 20px"
-      //   h="1rem"
-      // />
+          <Center>
+            {/* <ProgressBar GameTimer={gameTimer} diffTop="" /> */}
+          </Center>
         );
         break;
 
       case 2:
         setBarPage(false);
-        setInstructionTitle("And 3 lives");
+        setInstructionTitle(`${l.livesTitle}`);
         setPageContent(<Lives GameLives={3} />);
         break;
 
       case 3:
-        setInstructionTitle("There are two difficulties");
+        setInstructionTitle(`${l.diffTitle}`);
         setPageContent(
           <Container mb="2rem">
-            <ButtonDefault style={{ marginTop: "1rem" }} colorSch="easyMode">
-              Easy
+            <ButtonDefault
+              style={{ marginTop: "1rem", pointerEvents: "none" }}
+              colorSch="easyMode"
+            >
+              {l.easyButton}
             </ButtonDefault>
 
-            <ButtonDefault style={{ marginTop: "1rem" }} colorSch="hardMode">
-              Hard
+            <ButtonDefault
+              style={{ marginTop: "1rem", pointerEvents: "none" }}
+              colorSch="hardMode"
+            >
+              {l.hardButton}
             </ButtonDefault>
           </Container>
         );
         break;
 
       case 4:
-        setInstructionTitle("Easy");
+        setInstructionTitle(`${l.easyButton}`);
         setPageContent(
           <PokemonImage
             pokemonSprite="./img/psyduck.png"
@@ -148,7 +141,7 @@ const InstructionScreen = (props) => {
         break;
 
       case 5:
-        setInstructionTitle("Hard");
+        setInstructionTitle(`${l.hardButton}`);
         setPageContent(
           <PokemonImage
             pokemonSprite="./img/psyduck.png"
@@ -196,7 +189,7 @@ const InstructionScreen = (props) => {
   };
 
   return (
-    <Container> 
+    <Container>
       <Center
         bg={titleBG}
         w="100%"
@@ -241,6 +234,9 @@ const InstructionScreen = (props) => {
           exit="leave"
         >
           {pageContent}
+          {instructionPage === 1 && (
+            <ProgressBar GameTimer={gameTimer} diffTop="" />
+          )}
         </Center>
         {/* <PageDotIndicator /> */}
       </Center>
@@ -250,7 +246,7 @@ const InstructionScreen = (props) => {
         </ButtonDefault>
         <ButtonDefault onClick={() => props.onInstructions(false)}>
           {/* <CheckIcon /> */}
-          Menu
+          {l.menuButton}
         </ButtonDefault>
         <ButtonDefault onClick={forwardHandler}>
           <ArrowRightIcon />

@@ -4,8 +4,15 @@ import { useState, useEffect } from "react";
 import ButtonDefault from "../UI/ButtonDefault";
 import { motion, AnimatePresence } from "framer-motion";
 import LevelBar from "../UI/LevelBar";
+import { useRouter } from "next/router";
+import en from "../locales/en";
+import es from "../locales/es";
 
 const GameOverScreen = (props) => {
+  const router = useRouter();
+  const { locale } = router;
+  const l = locale === "en" ? en : es;
+
   const psyduckVariants = {
     hidden: {
       x: -20,
@@ -153,7 +160,7 @@ const GameOverScreen = (props) => {
         exit="leave"
         textAlign="center"
       >
-        Score: {props.matchScore}{" "}
+        {l.score}: {props.matchScore}{" "}
         {props.difficulty !== "easy" && (
           <Text
             textAlign="center"
@@ -170,13 +177,13 @@ const GameOverScreen = (props) => {
 
       <Center flexDir="column" gap="1rem">
         <ButtonDefault onClick={playAgainHandler} delayTime=".2">
-          Play Again
+          {l.playAgainButton}
         </ButtonDefault>
         <ButtonDefault onClick={selectModeHandler} delayTime=".3">
-          Select Mode
+          {l.selectModeButton}
         </ButtonDefault>
         <ButtonDefault onClick={menuHandler} delayTime=".4">
-          Menu
+          {l.menuButton}
         </ButtonDefault>
       </Center>
     </Center>

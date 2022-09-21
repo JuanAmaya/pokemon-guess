@@ -1,0 +1,16 @@
+export default {
+  playButton: "Play",
+  instructionsButton: "Instructions",
+  pokemonTitle: "Guess all the Pokemon",
+  timeTitle: "You have 1 minute",
+  livesTitle: "And 3 lives",
+  diffTitle: "There are two difficulties",
+  easyButton: "Easy",
+  hardButton: "Hard",
+  menuButton: "Menu",
+  selectDiff: "Select the difficulty",
+  score: "Score",
+  playAgainButton: "Play Again",
+  selectModeButton: "Select Mode",
+  levelTag: "Lvl.",
+};
