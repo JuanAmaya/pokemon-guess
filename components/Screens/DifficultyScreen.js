@@ -50,6 +50,7 @@ const DifficultyScreen = (props) => {
         py="1rem"
         px="2rem"
         borderRadius="10px"
+        textAlign="center"
       >
         {l.selectDiff}
       </Text>
