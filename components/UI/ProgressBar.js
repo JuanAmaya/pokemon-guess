@@ -18,10 +18,6 @@ const ProgressBar = (props) => {
     },
   };
 
-  useEffect(() => {
-    console.log(props.GameTimer);
-  }, [props.GameTimer]);
-
   return (
     <AnimatePresence>
       <Progress

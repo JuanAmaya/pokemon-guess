@@ -1,6 +1,6 @@
 import ButtonDefault from "../UI/ButtonDefault";
 
-import { Container, Text, Center, Image, Select } from "@chakra-ui/react";
+import { Container, Center, Image, Select } from "@chakra-ui/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useEffect, useState } from "react";
@@ -21,7 +21,6 @@ const MenuScreen = (props) => {
     e.preventDefault();
     const locale = e.target.value;
     router.push("/", "/", { locale: locale });
-    console.log(router);
   };
 
   const pokemonTitleVariants = {
@@ -91,10 +90,19 @@ const MenuScreen = (props) => {
       >
         {l.instructionsButton}
       </ButtonDefault>
-      <Select onChange={changeLanguage} defaultValue={locale}>
-        <option value="en">EN</option>
-        <option value="es">ES</option>
-      </Select>
+      <Center>
+        <Select
+          onChange={changeLanguage}
+          defaultValue={locale}
+          mt="3rem"
+          w="10rem"
+          size="md"
+          variant="filled"
+        >
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+        </Select>
+      </Center>
     </Container>
   );
 };
